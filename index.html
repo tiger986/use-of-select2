@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+
+    <link rel="stylesheet" type="text/css" href="select2.min.css" />
+    <link rel="stylesheet" type="text/css" href="index.css" />
+</head>
+<body>
+    <div class="box">
+        <div class="content_right_newcourse_design_bara">
+            <div class="content_right_newcourse_design_bara_l">主标题</div>
+            <div class="content_right_newcourse_design_bara_r_diff">
+                <select class="js-example-basic-single" id="courseLable_list" style="width: 360px;height: 38px;">
+                    <!--<option selected="selected" value="">请选择主标题</option>-->
+                </select>
+            </div>
+        </div>
+
+        <div class="content_right_newcourse_design_bara" style="height: auto;overflow: hidden">
+            <div class="content_right_newcourse_design_bara_l">副标题</div>
+            <div class="content_right_newcourse_design_bara_r_diff" style="height: auto">
+                <select class="js-example-basic-single" id="subLabel_list" style="width: 360px;height: 38px;">
+                    <option value="1">教育</option>
+                    <option value="2">文化</option>
+                    <option value="3">小说</option>
+                    <option value="4">图片</option>
+                    <option value="5">电影</option>
+                    <option value="6">综艺</option>
+                    <option value="7">搞笑</option>
+                    <option value="8">剧集</option>
+                    <option value="9">武术</option>
+                    <option value="10">文艺</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="content_right_newcourse_design_bara">
+            <div class="content_right_newcourse_design_bara_l">发布者</div>
+            <div class="content_right_newcourse_design_bara_r_diff">
+                <select class="js-example-basic-single" id="uploader" style="width: 360px;height: 38px;">
+                    <!--<option selected="selected" value="">请选择发布者</option>-->
+                </select>
+            </div>
+        </div>
+
+        <div class="content_right_newcourse_design_bara">
+            <div class="content_right_newcourse_design_bara_l">点击量</div>
+            <div class="content_right_newcourse_design_bara_r_diff">
+                <select class="js-example-basic-single" id="number" style="width: 360px;height: 38px;">
+                    <!--<option selected="selected" value="">请选择点击量</option>-->
+                </select>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="jquery-1.10.1.min.js"></script>
+<script src="select2.min.js"></script>
+<script>
+    $(".js-example-basic-single").select2({
+        minimumResultsForSearch: Infinity
+    });
+
+    var dataList = [
+        {id: 1, text: "优酷", name: "100"},
+        {id: 2, text: "土豆", name: "200"},
+        {id: 3, text: "爱奇艺", name: "300"},
+        {id: 4, text: "贴吧", name: "400"},
+        {id: 5, text: "头条", name: "500"},
+        {id: 6, text: "腾讯", name: "600"}
+    ];
+
+    //单选，data选项
+    $("#courseLable_list").select2({
+        placeholder : '请选择主标题', //select2默认选中第一个option,所以此属性内容会被覆盖,可在select标签下写一个option的内容为提示语或者设置默认不选中任何option
+        data: dataList,
+        //placeholder : '请选择主标题',
+    }).change(function(){
+        console.log($("#courseLable_list").val()); //被选中option的id,如：2
+        console.log($("#courseLable_list").select2("data")); //被选中option的所有属性(数组+对象)，如：[{selected: true, disabled: false, text: "土豆", id: "2", name: "200", element: option}]
+    });
+    $("#courseLable_list").select2('val',''); //默认不选中任何option
+
+
+    //多选，自定义的固定选项
+    $("#subLabel_list").select2({
+        placeholder : '请选择副标题',
+        multiple : true, //Select2是否允许选择多个值
+        maximumSelectionLength : 4, //最多可选择4个选项
+        openOnEnter: false, //打开下拉如果设置为true,当用户按下回车键,Select2选择并关闭。 默认情况下启用这个选项。
+        //allowClear: true // 允许清空
+    }).change(function(){
+        console.log($("#subLabel_list").val()); //被选中option的id(数组),如：["2", "4", "5"]
+        console.log($("#subLabel_list").select2("data")); //被选中option的所有属性(数组+对象)，如：[{……},{……}]
+    });
+    //$("#subLabel_list").select2('val','2'); //默认选中id=2的option
+    $("#subLabel_list").val(['2','4','5']).trigger('change'); //默认选中多个option（用于多选时）
+
+
+    //单选，ajax选项
+    $("#uploader").select2({
+        placeholder : '请选择发布者',
+        multiple : true,
+        ajax: {
+            url: 'http://zj.primecloud.cn/teacherCourse/getBookCourse',
+            type: 'get',
+            dataType: 'json',
+            processResults: function (data) {
+                return {results: data.data}; //赋给results的值必须为[{id:123, text:"abc"},……]的格式，当然可以添加其他属性({id:123, text:"abc", tt:"aaa"})
+            }
+        }
+    });
+
+
+
+    var dataList2 = [
+        {id: "1", text: "158次"},
+        {id: "2", text: "238次"},
+        {id: "3", text: "368次"},
+        {id: "4", text: "488次"},
+        {id: "5", text: "578次"},
+        {id: "6", text: "618次"},
+        {id: "0", text: "无"}
+    ];
+
+    //多选 待选项中包含“无”这一选项 添加默认选中项
+    var idFlag = 1;
+    var number = $("#number").select2({
+        placeholder : '请选择点击量',
+        data: dataList2,
+        multiple : true,
+    }).change(function(){
+        //处理选择“无”的情况
+        var index = $.inArray("0", $("#number").val());
+        if(index >= 0 && idFlag == 1){
+            idFlag = 2;
+            $("#number").select2("val", "0");
+        }else if(index >= 0 && idFlag == 2 && $("#number").val().length == 2){
+            //alert(index);
+            idFlag = 1;
+            var _id;
+            index == 0? _id = $("#number").val()[1] : _id = $("#number").val()[0];
+            $("#number").select2("val", _id);
+        }
+    });
+
+    //多选添加默认选中项方法1
+    $("#number").select2("val", ["2", "5"]);//若只添加一个默认选中项，则:$("#number").select2("val", ["2"]) 或者 $("#number").select2("val", "2");
+
+    //多选添加默认选中项方法2
+    /*var data = [{id: "1", text: "158次"}, {id: "5", text: "578次"}];
+    for(var i = 0; i < data.length; i++){
+        var option = new Option(data[i].text, data[i].id, true, true);
+        number.append(option);
+    }
+    number.trigger("change");*/
+
+
+    //单选添加默认选中项方法1
+    //$("#number").select2("val", "2");
+
+    //单选添加默认选中项方法2
+    /*var option = new Option("238次", "2", true, true);
+    number.append(option);
+    number.trigger("change");*/
+
+
+    //清空选中项
+    //$("#number").select2("val", "");
+
+    //select的搜索框在css中被设置成隐藏了
+
+
+</script>
+</html>
+
